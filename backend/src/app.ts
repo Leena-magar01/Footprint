@@ -14,6 +14,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://footprint-higz.vercel.app',
+  'https://ecopilot-frontend-732582226489.us-central1.run.app',
   process.env.FRONTEND_URL || ''
 ].filter(Boolean);
 
