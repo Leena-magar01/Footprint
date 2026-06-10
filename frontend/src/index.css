@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg-primary: #040d0a;
+  --bg-secondary: #0a1b15;
+  --text-primary: #f8f9fa;
+  --text-secondary: #adb5bd;
+  
+  /* Eco Palette */
+  --eco-primary: #2ec4b6;
+  --eco-primary-rgb: 46, 196, 182;
+  --eco-success: #20bf55;
+  --eco-success-rgb: 32, 191, 85;
+  --eco-accent: #7209b7;
+  --eco-warning: #ffb703;
+  --eco-danger: #e63946;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(10, 27, 21, 0.4);
+  --glass-border: rgba(46, 196, 182, 0.15);
+  --glass-hover-border: rgba(46, 196, 182, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* High Contrast Mode Variables */
+.high-contrast {
+  --bg-primary: #000000;
+  --bg-secondary: #121212;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --eco-primary: #00ffff;
+  --eco-primary-rgb: 0, 255, 255;
+  --eco-success: #00ff00;
+  --eco-success-rgb: 0, 255, 0;
+  --eco-accent: #ff00ff;
+  --eco-warning: #ffff00;
+  --eco-danger: #ff0000;
+  --glass-bg: #121212;
+  --glass-border: #ffffff;
+  --glass-hover-border: #00ffff;
+  --glass-shadow: none;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(46, 196, 182, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(114, 9, 183, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Reusable Glassmorphism Card style */
+.eco-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  padding: 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.eco-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--glass-hover-border);
+  box-shadow: 0 12px 40px 0 rgba(46, 196, 182, 0.15);
+}
+
+/* Micro-animations */
+.hover-grow {
+  transition: var(--transition-smooth);
+}
+.hover-grow:hover {
+  transform: scale(1.02);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(var(--eco-primary-rgb), 0.5);
+}
+
+.eco-btn-primary {
+  background: linear-gradient(135deg, var(--eco-primary), var(--eco-success));
+  color: #040d0a !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.eco-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(var(--eco-success-rgb), 0.4);
+  filter: brightness(1.1);
+}
+
+.eco-btn-outline {
+  background: transparent;
+  color: var(--eco-primary) !important;
+  border: 1.5px solid var(--eco-primary);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.eco-btn-outline:hover {
+  background: rgba(var(--eco-primary-rgb), 0.1);
+  transform: translateY(-2px);
+}
+
+/* Nav Link overrides */
+.nav-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--eco-primary) !important;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background-color: var(--eco-primary);
+  border-radius: 2px;
+}
+
+/* Custom badges */
+.eco-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+}
+
+.badge-green {
+  background-color: rgba(32, 191, 85, 0.15);
+  color: var(--eco-success);
+  border: 1px solid rgba(32, 191, 85, 0.3);
+}
+
+.badge-violet {
+  background-color: rgba(114, 9, 183, 0.15);
+  color: #b5179e;
+  border: 1px solid rgba(114, 9, 183, 0.3);
+}
+
+/* Accessibility Focus Ring style */
+*:focus-visible {
+  outline: 3px solid var(--eco-primary);
+  outline-offset: 2px;
+}
+
+/* Progress bar customization */
+.progress {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-eco {
+  background: linear-gradient(90deg, var(--eco-primary), var(--eco-success));
+}
+
+/* Equivalents Card specific style */
+.equiv-icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+/* Accessibility high contrast enhancements */
+.high-contrast .eco-card {
+  border: 2px solid #ffffff;
+}
+
+.high-contrast .eco-btn-primary {
+  background: #00ffff;
+  color: #000000 !important;
+  border: 2px solid #ffffff;
+}
+
+.high-contrast .eco-btn-outline {
+  border: 2px solid #00ffff;
+  color: #00ffff !important;
+}
