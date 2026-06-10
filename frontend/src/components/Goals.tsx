@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { useAuth } from '../context/AuthContext';
 
 export const Goals: React.FC = () => {
-  const { refreshUser } = useAuth();
   const [goals, setGoals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
@@ -187,7 +185,6 @@ export const Goals: React.FC = () => {
                   const carbonRemaining = Math.max(0, goal.targetValue - goal.currentValue);
                   const budgetConsumedPercent = Math.min(100, (goal.currentValue / goal.targetValue) * 100);
                   const isOverBudget = goal.currentValue > goal.targetValue;
-                  const isCompleted = goal.status !== 'active';
                   
                   return (
                     <div 
