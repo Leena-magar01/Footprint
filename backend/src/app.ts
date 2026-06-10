@@ -11,10 +11,17 @@ import notificationRoutes from './routes/notification';
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://footprint-higz.vercel.app',
+  process.env.FRONTEND_URL || ''
+].filter(Boolean);
+
 app.use(cors({
-  origin: '*', // For development. Adjust to frontend origin in production
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
