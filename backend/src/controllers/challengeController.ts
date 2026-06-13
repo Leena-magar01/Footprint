@@ -120,34 +120,29 @@ export const completeChallenge = async (req: AuthRequest, res: Response): Promis
     const user = await User.findById(userId);
     let badgesEarned: string[] = [];
     if (user) {
+      const oldBadges = [...user.badges];
       user.points += challenge.points;
       
-      // Update active streak if completing challenges
+      // Update active streak if completing challenges (using midnight comparison for calendar days)
       const today = new Date();
-      const lastActiveDate = new Date(user.lastActive);
-      const diffTime = Math.abs(today.getTime() - lastActiveDate.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+      const lastActive = new Date(user.lastActive);
+      const lastActiveMidnight = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate()).getTime();
       
-      if (diffDays <= 1) {
+      const diffTime = todayMidnight - lastActiveMidnight;
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (user.streak === 0) {
+        user.streak = 1;
+      } else if (diffDays === 1) {
         user.streak += 1;
+      } else if (diffDays > 1) {
+        user.streak = 1; // reset streak if missed a day
       }
       user.lastActive = today;
 
-      // Reward badges based on points milestones
-      if (user.points >= 100 && !user.badges.includes('Eco Starter')) {
-        user.badges.push('Eco Starter');
-        badgesEarned.push('Eco Starter');
-      }
-      if (user.points >= 500 && !user.badges.includes('Eco Warrior')) {
-        user.badges.push('Eco Warrior');
-        badgesEarned.push('Eco Warrior');
-      }
-      if (user.points >= 1500 && !user.badges.includes('Carbon Hero')) {
-        user.badges.push('Carbon Hero');
-        badgesEarned.push('Carbon Hero');
-      }
-
       await user.save();
+      badgesEarned = user.badges.filter(b => !oldBadges.includes(b));
     }
 
     res.status(200).json({

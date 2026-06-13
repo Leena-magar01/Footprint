@@ -113,6 +113,7 @@ export const FootprintTracker: React.FC = () => {
 
       setSuccessMsg(`Footprint logged! +${response.pointsEarned} points earned.`);
       setAmount(0); // reset amount
+      setPage(1); // reset to page 1 so the new log is visible
       fetchLogs();
       refreshUser(); // update points in navbar
     } catch (err: any) {

@@ -8,7 +8,7 @@ import { runMLPrediction } from '../services/mlService';
 
 export const logFootprint = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { category, amount, details, date } = req.body;
+    const { category, amount, details, date, carbonEmission } = req.body;
     const userId = req.user?.id;
 
     if (!userId) {
@@ -21,7 +21,7 @@ export const logFootprint = async (req: AuthRequest, res: Response): Promise<voi
       return;
     }
 
-    const calculatedCarbon = calculateEmissions(category, amount, details || {});
+    const calculatedCarbon = carbonEmission !== undefined ? Number(carbonEmission) : calculateEmissions(category, amount, details || {});
 
     const newLog = new FootprintLog({
       userId,
@@ -38,13 +38,6 @@ export const logFootprint = async (req: AuthRequest, res: Response): Promise<voi
     const user = await User.findById(userId);
     if (user) {
       user.points += 10;
-      // Check for badges
-      if (user.points >= 500 && !user.badges.includes('Eco Warrior')) {
-        user.badges.push('Eco Warrior');
-      }
-      if (user.points >= 1500 && !user.badges.includes('Carbon Hero')) {
-        user.badges.push('Carbon Hero');
-      }
       await user.save();
     }
 

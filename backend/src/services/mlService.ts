@@ -28,7 +28,9 @@ export const runMLPrediction = async (
     // Resolve absolute path to python executable in virtual env and predict.py script
     // On Windows, the venv python is at ml/venv/Scripts/python.exe
     const workspaceRoot = path.resolve(__dirname, '../../..');
-    const pythonPath = path.join(workspaceRoot, 'ml', 'venv', 'Scripts', 'python.exe');
+    const isWindows = process.platform === 'win32';
+    const pythonBin = isWindows ? 'Scripts/python.exe' : 'bin/python';
+    const pythonPath = path.join(workspaceRoot, 'ml', 'venv', pythonBin);
     const scriptPath = path.join(workspaceRoot, 'ml', 'predict.py');
 
     const inputData: PredictionInput = {

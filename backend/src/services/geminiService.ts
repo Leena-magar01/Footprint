@@ -22,6 +22,36 @@ export interface EcoLensResult {
 }
 
 /**
+ * Helper to extract and parse JSON from AI response, ignoring any wrapping text or markdown code blocks
+ */
+const cleanAndParseJSON = (text: string): any => {
+  const firstCurly = text.indexOf('{');
+  const firstBracket = text.indexOf('[');
+  let startIdx = -1;
+  let endChar = '';
+  
+  if (firstCurly !== -1 && (firstBracket === -1 || firstCurly < firstBracket)) {
+    startIdx = firstCurly;
+    endChar = '}';
+  } else if (firstBracket !== -1) {
+    startIdx = firstBracket;
+    endChar = ']';
+  }
+  
+  if (startIdx === -1) {
+    throw new Error('JSON structure not found');
+  }
+  
+  const endIdx = text.lastIndexOf(endChar);
+  if (endIdx === -1 || endIdx < startIdx) {
+    throw new Error('Invalid JSON structure boundaries');
+  }
+  
+  const jsonStr = text.slice(startIdx, endIdx + 1);
+  return JSON.parse(jsonStr);
+};
+
+/**
  * Generate sustainability insights based on user activity aggregates
  */
 export const generateAIInsights = async (
@@ -55,10 +85,7 @@ export const generateAIInsights = async (
 
     const result = await model.generateContent(contextPrompt);
     const text = result.response.text().trim();
-    
-    // Clean JSON response (in case Gemini still wraps it in markdown backticks)
-    const cleanText = text.replace(/^```json/, '').replace(/```$/, '').trim();
-    return JSON.parse(cleanText);
+    return cleanAndParseJSON(text);
   } catch (error) {
     console.error('Gemini API Error in generateAIInsights:', error);
     return getMockInsights(userFootprints);
@@ -107,8 +134,7 @@ export const analyzeImageEcoLens = async (
 
     const result = await model.generateContent([prompt, ...imageParts]);
     const text = result.response.text().trim();
-    const cleanText = text.replace(/^```json/, '').replace(/```$/, '').trim();
-    return JSON.parse(cleanText);
+    return cleanAndParseJSON(text);
   } catch (error) {
     console.error('Gemini API Error in analyzeImageEcoLens:', error);
     return getMockEcoLensAnalysis(fileName);

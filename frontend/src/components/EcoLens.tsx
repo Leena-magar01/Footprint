@@ -82,6 +82,7 @@ export const EcoLens: React.FC = () => {
       await api.logFootprint({
         category: result.category,
         amount: 1, // unit log
+        carbonEmission: result.estimatedFootprint,
         details,
         date: new Date().toISOString().split('T')[0]
       });

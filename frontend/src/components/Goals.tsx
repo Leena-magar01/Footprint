@@ -3,6 +3,7 @@ import { api } from '../services/api';
 
 export const Goals: React.FC = () => {
   const [goals, setGoals] = useState<any[]>([]);
+  const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
   
@@ -17,13 +18,38 @@ export const Goals: React.FC = () => {
   const fetchGoals = async () => {
     try {
       setLoading(true);
-      const data = await api.getGoals();
-      setGoals(data);
+      const [goalsData, analyticsData] = await Promise.all([
+        api.getGoals(),
+        api.getAnalytics().catch(() => null)
+      ]);
+      setGoals(goalsData);
+      if (analyticsData) {
+        setAnalytics(analyticsData);
+      }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPreviewBudget = (): number => {
+    const defaultDailyRate = category === 'total' ? 20.0 : 4.0;
+    let dailyAverage = defaultDailyRate;
+    
+    if (analytics) {
+      if (category === 'total') {
+        dailyAverage = analytics.totals.averageDaily || defaultDailyRate;
+      } else {
+        const days = analytics.totals.daysTracked || 1;
+        const totalCategory = analytics.breakdown[category] || 0;
+        dailyAverage = totalCategory > 0 ? (totalCategory / days) : defaultDailyRate;
+      }
+    }
+    
+    const goalDurationBaseline = dailyAverage * durationDays;
+    const reductionAmount = goalDurationBaseline * (targetReductionPercentage / 100.0);
+    return Math.max(1.0, goalDurationBaseline - reductionAmount);
   };
 
   useEffect(() => {
@@ -147,7 +173,7 @@ export const Goals: React.FC = () => {
               <div className="p-3 mb-4 rounded-3 border border-success border-opacity-20 bg-success bg-opacity-5 small text-white-50">
                 <i className="bi bi-info-circle-fill text-success me-2" aria-hidden="true"></i>
                 Based on your averages, we will establish a carbon budget of{' '}
-                <strong>{(category === 'total' ? 20 : 4) * durationDays * (1 - targetReductionPercentage/100)} kg CO₂</strong> for this{' '}
+                <strong>{getPreviewBudget().toFixed(1)} kg CO₂</strong> for this{' '}
                 {durationDays} day period. Log activities below this budget to hit your goal!
               </div>
 

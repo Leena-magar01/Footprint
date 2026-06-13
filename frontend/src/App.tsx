@@ -41,6 +41,11 @@ export const App: React.FC = () => {
 
   return (
     <div className="d-flex flex-column min-h-screen">
+      {/* Accessible Skip Link */}
+      <a href="#main-content" className="visually-hidden-focusable text-success text-decoration-none p-2 bg-dark border border-success position-absolute start-0 top-0 m-2" style={{ zIndex: 9999 }}>
+        Skip to main content
+      </a>
+
       {/* Top Navigation */}
       <Navbar currentTab={currentTab} setTab={setTab} />
 
@@ -54,13 +59,10 @@ export const App: React.FC = () => {
         {currentTab === 'leaderboard' && <Leaderboard />}
       </main>
 
-      {/* Accessible Skip Link / Footer */}
+      {/* Footer */}
       <footer className="py-4 mt-auto text-center border-top border-secondary border-opacity-10 small text-muted">
         <div className="container">
           <p className="m-0">© 2026 EcoPilot AI. Built for the Carbon Footprint Awareness Challenge.</p>
-          <a href="#main-content" className="text-success text-decoration-none mt-1 d-inline-block">
-            Skip to main content
-          </a>
         </div>
       </footer>
     </div>

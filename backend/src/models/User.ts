@@ -13,6 +13,20 @@ const UserSchema = new Schema<IUser>({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Award badges automatically based on points milestones
+UserSchema.pre<IUser>('save', function (next) {
+  if (this.points >= 100 && !this.badges.includes('Eco Starter')) {
+    this.badges.push('Eco Starter');
+  }
+  if (this.points >= 500 && !this.badges.includes('Eco Warrior')) {
+    this.badges.push('Eco Warrior');
+  }
+  if (this.points >= 1500 && !this.badges.includes('Carbon Hero')) {
+    this.badges.push('Carbon Hero');
+  }
+  next();
+});
+
 // Hash password before saving
 UserSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password')) return next();

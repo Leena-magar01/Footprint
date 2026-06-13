@@ -66,15 +66,18 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Update streak and lastActive date
+    // Update streak and lastActive date (using midnight comparison for calendar days)
     const today = new Date();
-    const lastActiveDate = new Date(user.lastActive);
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const lastActive = new Date(user.lastActive);
+    const lastActiveMidnight = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate()).getTime();
     
-    // Check if last active was yesterday to increase streak, or reset if missed
-    const diffTime = Math.abs(today.getTime() - lastActiveDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = todayMidnight - lastActiveMidnight;
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 1) {
+    if (user.streak === 0) {
+      user.streak = 1;
+    } else if (diffDays === 1) {
       user.streak += 1;
     } else if (diffDays > 1) {
       user.streak = 1; // restart streak
