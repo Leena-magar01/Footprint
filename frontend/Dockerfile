@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-ENV VITE_API_URL="https://ecopilot-backend-732582226489.us-central1.run.app/api"
+ARG VITE_API_URL="https://ecopilot-backend-732582226489.us-central1.run.app/api"
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 # Production stage - Nginx to serve static files
